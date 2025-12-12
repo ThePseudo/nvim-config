@@ -113,3 +113,26 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	end,
 })
 
+require("overseer").setup({
+	
+})
+
+require('render-markdown').setup({
+	completions = { lsp = { enabled = true } },
+})
+
+vim.lsp.config('rust-analyzer', {
+	settings = {
+		['rust-analyzer'] = {},
+	},
+})
+
+vim.lsp.config('cmake-language-server', {})
+
+-- coq = require('coq')
+
+-- vim.lsp.enable('cmake-language-server', coq.lsp_ensure_capabilities())
+-- vim.lsp.enable('rust-analyzer', coq.lsp_ensure_capabilities())
+vim.lsp.enable('cmake-language-server')
+vim.lsp.enable('rust-analyzer')
+
