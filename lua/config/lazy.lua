@@ -57,7 +57,7 @@ require("aerial").setup({
 		vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
 		vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
 		-- You probably also want to set a keymap to toggle aerial
-		vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
+		vim.keymap.set("n", "<leader>ta", "<cmd>AerialToggle!<CR>")
 	end,
 	layout = {
 		-- These control the width of the aerial window.
@@ -121,18 +121,27 @@ require('render-markdown').setup({
 	completions = { lsp = { enabled = true } },
 })
 
-vim.lsp.config('rust-analyzer', {
-	settings = {
-		['rust-analyzer'] = {},
-	},
-})
 
 vim.lsp.config('cmake-language-server', {})
 
--- coq = require('coq')
-
--- vim.lsp.enable('cmake-language-server', coq.lsp_ensure_capabilities())
--- vim.lsp.enable('rust-analyzer', coq.lsp_ensure_capabilities())
 vim.lsp.enable('cmake-language-server')
-vim.lsp.enable('rust-analyzer')
 
+
+local bufnr = vim.api.nvim_get_current_buf()
+vim.keymap.set(
+  "n",
+  "<leader>a",
+  function()
+    vim.cmd.RustLsp('codeAction') -- supports rust-analyzer's grouping
+    -- or vim.lsp.buf.codeAction() if you don't want grouping.
+  end,
+  { silent = true, buffer = bufnr }
+)
+vim.keymap.set(
+  "n",
+  "K",  -- Override Neovim's built-in hover keymap with rustaceanvim's hover actions
+  function()
+    vim.cmd.RustLsp({'hover', 'actions'})
+  end,
+  { silent = true, buffer = bufnr }
+)
