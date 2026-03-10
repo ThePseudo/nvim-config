@@ -1,4 +1,10 @@
+require('config.common')
+
 vim.keymap.set("n", "<leader>bd", "<cmd>BufferClose<CR>")
 vim.keymap.set("n", "<leader>bl", "<cmd>NvimTreeToggle<CR>") 
 vim.keymap.set("n", "<leader>bo", "<cmd>OverseerToggle<CR>")
 vim.keymap.set("n", "<leader>tb", "<cmd>DapToggleBreakpoint<CR>")
+vim.keymap.set("n", "<leader>rh", resize(0, 2, "left"))
+vim.keymap.set("n", "<leader>rj", resize(0, 1, "down"))
+vim.keymap.set("n", "<leader>rk", resize(0, 1, "up"))
+vim.keymap.set("n", "<leader>rl", resize(0, 2, "right"))
