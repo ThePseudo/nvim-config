@@ -21,7 +21,6 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
-
 -- Setup lazy.nvim
 require("lazy").setup({
 	spec = {
@@ -38,74 +37,33 @@ require("lazy").setup({
 require("lualine").setup({
 	options = {
 		icons_enabled = true,
-		theme='gruvbox',
+		theme = "gruvbox",
 		globalstatus = true,
-	}
+	},
 })
 
 require("catppuccin").setup({
-	flavour="mocha",
-	auto_integrations=true,
+	flavour = "mocha",
+	auto_integrations = true,
 })
 
-vim.cmd.colorscheme "catppuccin"
-
-require("aerial").setup({
-	-- optionally use on_attach to set keymaps when aerial has attached to a buffer
-	on_attach = function(bufnr)
-		-- Jump forwards/backwards with '{' and '}'
-		vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
-		vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
-		-- You probably also want to set a keymap to toggle aerial
-		vim.keymap.set("n", "<leader>ta", "<cmd>AerialToggle!<CR>")
-	end,
-	layout = {
-		-- These control the width of the aerial window.
-		-- They can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
-		-- min_width and max_width can be a list of mixed types.
-		-- max_width = {40, 0.2} means "the lesser of 40 columns or 20% of total"
-		max_width = { 40, 0.2 },
-		width = 40,
-		min_width = 10,
-
-		-- key-value pairs of window-local options for aerial window (e.g. winhl)
-		win_opts = {},
-
-		-- Determines the default direction to open the aerial window. The 'prefer'
-		-- options will open the window in the other direction *if* there is a
-		-- different buffer in the way of the preferred direction
-		-- Enum: prefer_right, prefer_left, right, left, float
-		default_direction = "prefer_right",
-
-		-- Determines where the aerial window will be opened
-		--   edge   - open aerial at the far right/left of the editor
-		--   window - open aerial to the right/left of the current window
-		placement = "edge",
-
-		-- When the symbols change, resize the aerial window (within min/max constraints) to fit
-		resize_to_content = true,
-
-		-- Preserve window size equality with (:help CTRL-W_=)
-		preserve_equality = false,
-  	},
-})
+vim.cmd.colorscheme("catppuccin")
 
 require("barbar").setup({
 	icons = {
 		buffer_index = true,
 		buffer_number = false,
-	}
+	},
 })
 
 require("conform").setup({
 	formatters_by_ft = {
-		lua = {"stylua"},
-		python = {"isort", "black"},
-		rust = {"rustfmt", lsp_format = "fallback"},
-		cpp = {"clang-format"},
-		c = {"clang-format"},
-	}
-
+		lua = { "stylua" },
+		python = { "isort", "black" },
+		rust = { "rustfmt", lsp_format = "fallback" },
+		cpp = { "clang-format" },
+		c = { "clang-format" },
+	},
 })
 
 vim.api.nvim_create_autocmd("BufWritePre", {
@@ -115,36 +73,18 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	end,
 })
 
-require("overseer").setup({
-	
-})
-
-require('render-markdown').setup({
-	completions = { lsp = { enabled = true } },
-})
-
-
-vim.lsp.config('cmake-language-server', {})
-
-vim.lsp.enable('cmake-language-server')
-
+require("overseer").setup({})
 
 local bufnr = vim.api.nvim_get_current_buf()
+vim.keymap.set("n", "<leader>a", function()
+	vim.cmd.RustLsp("codeAction") -- supports rust-analyzer's grouping
+	-- or vim.lsp.buf.codeAction() if you don't want grouping.
+end, { silent = true, buffer = bufnr })
 vim.keymap.set(
-  "n",
-  "<leader>a",
-  function()
-    vim.cmd.RustLsp('codeAction') -- supports rust-analyzer's grouping
-    -- or vim.lsp.buf.codeAction() if you don't want grouping.
-  end,
-  { silent = true, buffer = bufnr }
+	"n",
+	"K", -- Override Neovim's built-in hover keymap with rustaceanvim's hover actions
+	function()
+		vim.cmd.RustLsp({ "hover", "actions" })
+	end,
+	{ silent = true, buffer = bufnr }
 )
-vim.keymap.set(
-  "n",
-  "K",  -- Override Neovim's built-in hover keymap with rustaceanvim's hover actions
-  function()
-    vim.cmd.RustLsp({'hover', 'actions'})
-  end,
-  { silent = true, buffer = bufnr }
-)
-
